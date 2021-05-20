@@ -1,0 +1,95 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Sales{% endblock title %}
+{% block extra_head %}
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Edit Sale</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'sales' %}">Sales</a></li>
+              <li class="breadcrumb-item active">Edit</a></li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Sale Particulars - {{ sale.particulars }}</h3>
+
+                <div class="card-tools">
+                  <a href="{% url 'sale_detail' sale.pk %}" type="button" class="btn btn-sm btn-success">
+                    <i class="fa fa-eye"></i> Sale Details
+                  </a>
+                  
+                  <a href="{% url 'sales' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-list"></i> Back to List
+                  </a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <form action="{% url 'sale_change' sale.pk %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {% include 'sales/form.html' %}
+                  <hr/>
+                  <button type="submit" class="btn btn-success float-right">Update</button>
+
+                </form>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                Edit Sale
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+
+      {{ form.date_made.value|json_script:'dateMade'}}
+
+    </section>
+    
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    $(function() {
+      var today = new Date();
+      var startDate = JSON.parse(document.getElementById('dateMade').textContent);
+      
+      $('#date').daterangepicker({
+          startDate: startDate,
+          showDropdowns: true,
+          singleDatePicker: true,
+          timePicker: true,
+          locale: {
+            format: 'YYYY-MM-DD HH:mm:ss'
+          }
+        });
+
+    });
+  </script> 
+{% endblock extra_js %}

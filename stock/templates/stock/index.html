@@ -1,0 +1,222 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Stock Turnover{% endblock title %}
+{% block extra_head %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Stocks</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item active">Stocks</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  Stocks > {{ $business ? $business->name:'All Businesses' }} > {{ ($type>=1&&$type<=2)?($type==1?'In':'Out'):'All Types' }}
+                </h3>
+                @if (session('success'))
+                  <div class="alert alert-success">
+                    {{ session('success')}}
+                  </div>
+                @endif
+                @if (session('warning'))
+                  <div class="alert alert-warning">
+                    {{ session('warninbg')}}
+                  </div>
+                @endif
+                @if (session('danger'))
+                  <div class="alert alert-danger">
+                    {{ session('danger')}}
+                  </div>
+                @endif
+                <div class="card-tools">
+                  <a href="{% url 'stocks.create' %}" class="btn btn-xs btn-info">
+                    <i class="fa fa-plus"></i> Add
+                  </a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <form action="{% url 'stocks.index' %}" class="form-inline" >
+                  <div class="input-group">
+                    <select class="form-control input-group-prepend form-control-sm" name="business">
+                      <option value="">-- all businesses --</option>
+                      @foreach($businesses as $buz)
+                        <option value="{{ $buz->id }}" @<?php if ($business && $business->id == $buz->id): ?>
+                          selected="true"  
+                        <?php endif ?> >{{ $buz->name }}</option>
+                      @endforeach
+                    </select>
+                    <select class="form-control input-group-prepend form-control-sm" name="type">
+                      <option value="">-- all types --</option>
+                      <option value="1" <?php if ($type == 1): ?>
+                        selected="true"  
+                      <?php endif ?> >Opening Stock</option>
+                      <option value="2" <?php if ($type == 2): ?>
+                        selected="true"  
+                      <?php endif ?> >Closing Stock</option>  
+                    </select>
+                    
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="range" 
+                      class="form-control float-right form-control-sm text-xs" id="range">
+                    <button class="btn btn-info input-group-append" type="submit">
+                      <i class="fa fa-recycle"></i>
+                    </button>
+                  </div>
+                </form>
+                <table id="stocks" class="table table-sm table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Business</th>
+                      <th>Particulars</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($stocks as $stock)
+                      <tr>
+                        <td>{{ $loop->index + 1 }}</td>
+                        <td>{{ $stock->business->name }}</td>
+                        <td>{{ $stock->particulars }}</td>
+                        <td>{{ $stock->stock_type==1?'Opening Stock':'Closing Stock' }}</td>
+                        <td align="right">{{ number_format($stock->amount, 0 %}</td>
+                        <td>{{ $stock->created_at }}</td>
+                        <td>
+                          <a href="{% url 'stocks.show', $stock->id %}" type="button" class="btn btn-xs btn-info">
+                            <i class="fa fa-eye"></i>
+                          </a>
+                          <a href="{% url 'stocks.edit', $stock- %}" type="button" class="btn btn-xs btn-warning">
+                            <i class="fa fa-edit"></i>
+                          </a>
+                          <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#delete-{{ $stock->id }}">
+                            <i class="fa fa-trash"></i>
+                          </button>
+                          @include('pages.stocks.confirm-delete')
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                  Stocks > {{ $business ? $business->name:'All Businesses' }} > {{ ($type>=1&&$type<=2)?($type==1?'Opening Stock':'Closing Stock'):'All Types' }} > {{ $range }}
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+  <!-- DataTables  & Plugins -->
+  <script src="{% static 'admin-lte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/pdfmake.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/vfs_fonts.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
+  <script>
+    $(function () {
+      var today = new Date();
+      var startDate = '{{ startDate }}';
+      var endDate = '{{ endDate }}';
+      if (!startDate) {startDate = moment().subtract(today.getDate()-1, 'days')}
+      if (!endDate) {endDate = moment()}
+
+      //Date range picker
+      $('#range').daterangepicker({
+          startDate: startDate,
+          endDate  : endDate,
+          showDropdowns: true,
+          locale: {
+            format: 'YYYY-MM-DD'
+          }
+        });
+      
+      $("#stocks").DataTable({
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "buttons": [
+          {
+            extend: "copy",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6]
+            }
+          },
+          {
+            extend: "excel",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6]
+            }
+          },
+          {
+            extend: "pdf",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6]
+            }
+          },
+          {
+            extend: "print",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6]
+            }
+          }
+        ]
+      }).buttons().container().appendTo('#stocks_wrapper .col-md-6:eq(0)');
+      
+    });
+  </script>
+{% endblock %}

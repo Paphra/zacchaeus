@@ -1,0 +1,1 @@
+Zacchaeus | Please, Activate Your Account in {{ expiration_days }} days

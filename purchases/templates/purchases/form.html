@@ -1,0 +1,65 @@
+{% if form.errors %}
+  <div class="alert alert-danger">
+    Please, correct the Errors below.
+    <ul>
+      {% for error in form.errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+{% if form.non_field_errors %}
+  <div class="alert alert-danger">
+    {{ form.non_field_errors }}
+  </div>
+{% endif %}
+
+<input hidden="true" value="{{ user.pk }}" name="user" />
+<input hidden="true" value="{{ user.business.pk }}" name="business" />
+
+<div class="form-group row">
+  <label for="particulars" class="col-sm-3 col-form-label text-right">Particulars</label>
+  <div class="col-sm-9">
+    <input type="text" class="form-control {% if form.particulars.errors %}is-invalide{% endif %}" 
+      id="particulars" name="particulars" placeholder="Purchase Particulars" 
+      value="{% if form.particulars.value %}{{ form.particulars.value }}{% endif %}" 
+      required="true">
+    {% if form.particulars.errors %}
+        <div class="invalid-feedback">{{ form.particulars.errors }}</div>    
+    {% endif %}
+  </div>
+</div>
+
+<div class="form-group row">
+  <label for="details" class="col-sm-3 col-form-label text-right">Details</label>
+  <div class="col-sm-9">
+    <textarea name="details" id="details" class="form-control" 
+      placeholder="Enter Purchase Description. Ex. Sold Item 1, Item 2, Item 3, ...">{% if form.details.value %}{{ form.details.value }}{% endif %}</textarea>
+    {% if form.details.errors %}
+        <div class="invalid-feedback">{{ form.details.errors }}</div>    
+    {% endif %}
+  </div>
+</div>
+<div class="form-group row">
+  <label for="amount" class="col-sm-3 col-form-label text-right">Amount</label>
+  <div class="col-sm-9">
+    <input type="number" min="0" class="form-control" 
+      id="amount" name="amount" placeholder="Purchase Amount" required="true"
+      value="{% if form.amount.value %}{{ form.amount.value }}{% endif %}">
+    {% if form.amount.errors %}
+        <div class="invalid-feedback">{{ form.aount.errors }}</div>    
+    {% endif %}
+  </div>
+</div>
+{% comment %} 
+<div class="form-group row">
+  <label for="date_made" class="col-sm-3 col-form-label text-right">Date Added</label>
+  <div class="col-sm-9">
+    <input type="datetime" min="0" class="form-control" 
+      id="date_made" name="date_made" placeholder="Date Added" 
+      value="{% if form.date_made.value %}{{ form.date_made.value }}{% endif %}">
+    {% if form.date_made.errors %}
+        <div class="invalid-feedback">{{ form.date_made.errors }}</div>    
+    {% endif %}
+  </div>
+</div> {% endcomment %}

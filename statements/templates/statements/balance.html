@@ -1,0 +1,228 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Balance Sheet{% endblock title %}
+{% block extra_head %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Balance Sheet</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item active">Balance Sheets</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  Balance Sheet > {{ $business ? $business->name:'All Businesses' }}
+                </h3>
+                @if (session('success'))
+                  <div class="alert alert-success">
+                    {{ session('success')}}
+                  </div>
+                @endif
+                @if (session('warning'))
+                  <div class="alert alert-warning">
+                    {{ session('warninbg')}}
+                  </div>
+                @endif
+                @if (session('danger'))
+                  <div class="alert alert-danger">
+                    {{ session('danger')}}
+                  </div>
+                @endif
+                <div class="card-tools">
+                  <!-- <a href="{% url 'returns.create' %}" class="btn btn-xs btn-info">
+                    <i class="fa fa-plus"></i> Add
+                  </a> -->
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <form action="{% url 'income-statements' %}" class="form-inline" >
+                  <div class="input-group">
+                    <select class="form-control input-group-prepend form-control-sm" name="business">
+                      <option value="">-- all businesses --</option>
+                      @foreach($businesses as $buz)
+                        <option value="{{ $buz->id }}" @<?php if ($business && $business->id == $buz->id): ?>
+                          selected="true"  
+                        <?php endif ?> >{{ $buz->name }}</option>
+                      @endforeach
+                    </select>
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="range" class="form-control float-right form-control-sm text-xs" id="statement-range" width="50%">
+                    <button class="btn btn-info input-group-append" type="submit">
+                      <i class="fa fa-recycle"></i>
+                    </button>
+                  </div>
+                </form>
+                <table id="statement" class="table table-sm table-bordered table-hover table-striped" width="100%">
+                  <thead>
+                    <tr>
+                      <th width="55%">Details</th>
+                      <th width="15%">Amount</th>
+                      <th width="15%">Amount</th>
+                      <th width="15%">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Assets</td>
+                      <td></td>
+                      <td align="right">{{ number_format($assets, 0) }}</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Add Net profit</td>
+                      <td></td>
+                      <td align="right">{{ number_format($net_profit, 0) }}</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><b>Total Assets</b></td>
+                      <td></td>
+                      <td></td>
+                      <td align="right" bgcolor="dark" style="color: white">
+                        <b>{{ number_format($total_assets, 0) }}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Long Term Liabilities</td>
+                      <td align="right">{{ number_format($long_term_liabilities, 0) }}</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Add Short Term Liabilities</td>
+                      <td align="right">{{ number_format($short_term_liabilities, 0) }}</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><b>Owner's Equity</b></td>
+                      <td></td>
+                      <td align="right" style="color: white" bgcolor="dark">
+                        <b>{{ number_format($owners_equity, 0) }}</b>
+                      </td>
+                      <td></td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                  Balance Sheet > {{ $business ? $business->name:'All Businesses' }} > {{ $range }}
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+  <!-- DataTables  & Plugins -->
+  <script src="{% static 'admin-lte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/pdfmake.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/vfs_fonts.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
+  <script>
+    $(function () {
+      var today = new Date();
+      var startDate = '{{ startDate }}';
+      var endDate = '{{ endDate }}';
+      if (!startDate) {startDate = moment().subtract(today.getDate()-1, 'days')}
+      if (!endDate) {endDate = moment()}
+
+      //Date range picker
+      $('#range').daterangepicker({
+          startDate: startDate,
+          endDate  : endDate,
+          showDropdowns: true,
+          locale: {
+            format: 'YYYY-MM-DD'
+          }
+        });
+      
+      $("#statement").DataTable({
+        "responsive": true, 
+        ordering: false,
+        paging: false,
+        "autoWidth": false,
+        "buttons": [
+          {
+            extend: "copy",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          },
+          {
+            extend: "excel",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          },
+          {
+            extend: "pdf",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          },
+          {
+            extend: "print",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          }
+        ]
+      }).buttons().container().appendTo('#statement_wrapper .col-md-6:eq(0)');
+      
+    });
+  </script>
+{% endblock %}

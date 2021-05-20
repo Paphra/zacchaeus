@@ -1,0 +1,54 @@
+<div class="form-group row">
+  <label for="business_id" class="col-sm-3 col-form-label text-right">Business</label>
+  <div class="col-sm-9">
+    <select name="business_id" class="form-control @error('business_id') is-invalid @enderror" id="business_id">
+      <option value="">-- select a business --</option>
+      @foreach ($businesses as $business)
+        <option value="{{ $business->id }}" <?php if (isset($liability) && $business->id == $liability->business->id): ?>
+          selected="true"
+        <?php endif ?> >{{ $business->name }}</option>
+      @endforeach
+    </select>
+    @error('business_id')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
+  </div>
+</div>
+<div class="form-group row">
+  <label for="particulars" class="col-sm-3 col-form-label text-right">Particulars</label>
+  <div class="col-sm-9">
+    <input type="text" class="form-control @error('particulars') is-invalid @enderror" id="particulars" name="particulars" placeholder="Liability Particulars" value="{{ $liability->particulars ?? old('particulars' %}" required="true">
+    @error('particulars')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
+  </div>
+</div>
+<div class="form-group row">
+  <label for="liability_type" class="col-sm-3 col-form-label text-right">Caariage Type</label>
+  <div class="col-sm-9">
+    <select class="form-control @error('liability_type') is-invalid @enderror" id="liability_type" name="liability_type">
+      <option value="">-- select type --</option>
+      <option value="1" <?php if (isset($liability) && $liability->liability_type == 1): ?>
+        selected='true'
+      <?php endif ?>>Short Term</option>
+      <option value="2" <?php if (isset($liability) && $liability->liability_type == 2): ?>
+        selected='true'
+      <?php endif ?>>Long Term</option>
+    </select>
+    @error('liability_type')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
+  </div>
+</div>
+<div class="form-group row">
+  <label for="description" class="col-sm-3 col-form-label text-right">Description</label>
+  <div class="col-sm-9">
+    <textarea name="description" id="description" class="form-control" placeholder="Enter Liability Description. Ex. Sold Item 1, Item 2, Item 3, ...">{{ $liability->description ?? old('description' %}</textarea>
+  </div>
+</div>
+<div class="form-group row">
+  <label for="amount" class="col-sm-3 col-form-label text-right">Amount</label>
+  <div class="col-sm-9">
+    <input type="number" min="0" class="form-control" id="amount" name="amount" placeholder="Liability Amount" value="{{ $liability->amount ?? old('amount' %}">
+  </div>
+</div>

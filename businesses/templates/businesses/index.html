@@ -1,0 +1,254 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Business{% endblock title %}
+
+{% block extra_head %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  
+{% endblock extra_head %}
+
+{% block content_header %}
+  <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Business</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item active">Business</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock content_header %}
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Business</h3>
+                <div class="card-tools">
+                  {% if perms.businesses.add_user and user.business %}
+                    <a href="{% url 'add_user' %}" class="btn btn-xs btn-primary">
+                      <i class="fa fa-plus"></i> Add User
+                    </a>
+                  {% endif %}
+                  {% if user.business and not user.business.tin and user.business.owner == user %}
+                    <a href="{% url 'pay-reg-fees' %}" class="btn btn-xs btn-danger">
+                      <i class="fa fa-receipt"></i> Pay Registration Fees
+                    </a>
+                  {% endif %}
+                  {% if perms.businesses.add_business %}
+                    {% if not user.business and not user.businessuser %}
+                      <a href="{% url 'register_business' %}" class="btn btn-xs btn-info">
+                        <i class="fa fa-plus"></i> Register Business
+                      </a>
+                    {% endif %}
+                  {% endif %}
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                {% if not user.business %}
+                  {% if perms.businesses.add_business %}
+                    <p>You have not yet Registered any Business With Us, Please Register one here: 
+                      <a href="{% url 'register_business' %}" class="btn btn-xs btn-success">
+                        <i class="fa fa-plus"></i> Register Business
+                      </a>
+                    </p>
+                  {% else %}
+                    <p>Please, Contact your Administrator to add a business!</p>
+                  {% endif %}
+                {% else %}
+                  <table id="business" class="table table-sm table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>TIN</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Website</th>
+                        <th>No. Users</th>
+                        <th>Added</th>
+                      </tr>
+                    <thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ user.business.name }}</td>
+                        <td>{{ user.business.tin }}</td>
+                        <td>{{ user.business.phone }}</td>
+                        <td>{{ user.business.email }}</td>
+                        <td>{{ user.business.website }}</td>
+                        <td>{{ user.business.users.all.count }}</td>
+                        <td>{{ user.business.created }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  
+                  <div class="row mt-3">
+                    <div class="col-sm-6">
+                      <div class="card border-success">
+                        <div class="card-header">
+                          <h6 class="card-title">Address Information</h6>
+                          <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-3 text-right"><b>District:</b></div>
+                            <div class="col-9">{{ user.business.address.district }}</div>
+                            <div class="col-3 text-right"><b>City:</b></div>
+                            <div class="col-9">{{ user.business.address.city }}</div>
+                          </div>
+                        </div>
+                        <div class="card-footer">
+                        
+                        </div>
+                      </div>
+                      
+                      <div class="card border-danger">
+                        <div class="card-header">
+                          <h6 class="card-title">Sector Information</h6>
+                          <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                        <div class="card-footer">
+                        
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="card">
+                        <div class="card-header">
+                          <h6 class="card-title">Size Information</h6>
+                          <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                        <div class="card-footer">
+                        
+                        </div>
+                      </div>
+                      
+                      <div class="card">
+                        <div class="card-header">
+                          <h6 class="card-title">Directorship Information</h6>
+                          <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                        <div class="card-footer">
+                        
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                Details About My Business
+                <a href="{% url 'users' %}" class="btn btn-xs btn-primary float-right">
+                  <i class="fa fa-users"></i> Users
+                </a>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+{% block extra_js %}
+  <!-- DataTables  & Plugins -->
+  <script src="{% static 'admin-lte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/pdfmake.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/vfs_fonts.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+{% endblock %}
+
+{% block extra_foot %}
+  <script>
+    $(function () {
+      $("#businesses").DataTable({
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "buttons": [
+          {
+            extend: "copy",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "excel",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "pdf",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "print",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          }
+        ]
+      }).buttons().container().appendTo('#businesses_wrapper .col-md-6:eq(0)');
+      
+    });
+  </script>
+{% endblock %}

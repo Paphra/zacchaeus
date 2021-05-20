@@ -1,0 +1,11 @@
+Dear {{ user.username }},
+
+Your account has been created and needs activation.
+Please, use this link to activate your account: {{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'django_registration_activate' activation_key %}
+
+Or Copy This and paste in your browser
+{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'django_registration_activate' activation_key %}
+
+If you don't activate your account in {{ expiration_days }} days, it will be deleted.
+
+Regards, Zacchaeus Team

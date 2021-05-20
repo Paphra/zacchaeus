@@ -1,0 +1,26 @@
+{% load static %}
+
+{% block scripts %}
+<script src="{% static 'admin-lte/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'admin-lte/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button);
+</script>
+<script src="{% static 'admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js' %} "></script>
+
+<!-- daterangepicker -->
+<script src="{% static 'admin-lte/plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'admin-lte/plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'admin-lte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+
+<!-- overlayScrollbars -->
+<script src="{% static 'admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+
+
+{% block datatable_js %}{% endblock %}
+
+<script src="{% static 'admin-lte/dist/js/adminlte.min.js' %}"></script>
+<script src="{% static 'admin-lte/dist/js/demo.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,38 @@
+<div class="form-group row">
+  <label for="business_id" class="col-sm-3 col-form-label text-right">Business</label>
+  <div class="col-sm-9">
+    <select name="business_id" class="form-control @error('business_id') is-invalid @enderror" id="business_id">
+      <option value="">-- select a business --</option>
+      @foreach ($businesses as $business)
+        <option value="{{ $business->id }}" @<?php if (isset($asset) && $business->id == $asset->business->id): ?>
+          selected="true"
+        <?php endif ?> >{{ $business->name }}</option>
+      @endforeach
+    </select>
+    @error('business_id')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
+  </div>
+</div>
+<div class="form-group row">
+  <label for="particulars" class="col-sm-3 col-form-label text-right">Particulars</label>
+  <div class="col-sm-9">
+    <input type="text" class="form-control @error('particulars') is-invalid @enderror" id="particulars" name="particulars" placeholder="Asset Particulars" value="{{ $asset->particulars ?? old('particulars' %}" required="true">
+    @error('particulars')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
+  </div>
+</div>
+
+<div class="form-group row">
+  <label for="description" class="col-sm-3 col-form-label text-right">Description</label>
+  <div class="col-sm-9">
+    <textarea name="description" id="description" class="form-control" placeholder="Enter Asset Description. Ex. Sold Item 1, Item 2, Item 3, ...">{{ $asset->description ?? old('description' %}</textarea>
+  </div>
+</div>
+<div class="form-group row">
+  <label for="amount" class="col-sm-3 col-form-label text-right">Amount</label>
+  <div class="col-sm-9">
+    <input type="number" min="0" class="form-control" id="amount" name="amount" placeholder="Asset Amount" value="{{ $asset->amount ?? old('amount' %}">
+  </div>
+</div>
