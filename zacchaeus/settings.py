@@ -28,7 +28,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-nyzbb=i-5b*cmyhs-rxh4
 DEBUG = os.environ.get('DEBUG', '') != 'False'
 
 ALLOWED_HOSTS = [
-    'localhost', '127.0.0.1',
+    'localhost', 
+    '127.0.0.1',
+    'zacchaeus.managementsystemsug.com',
 ]
 
 # Application definition
