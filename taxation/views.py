@@ -16,14 +16,15 @@ def day(month):
 def index(request):
     today = date.today()
     sDate = str(today.year) + '-07-01'
-    eDate = str(today.year) + '-' + str(today.month) + '-' + day(today.month)
+    eDate = str(today.year + 1) + '-06-30'
     if today.month < 7:
         sDate = str(today.year - 1) + '-07-01'
+        eDate = str(today.year) + '-06-30'
 
     if request.GET.get('range'):
         dates = request.GET.get('range').split(sep=" - ")
-        sDate = dates[0]
-        eDate = dates[1]
+        sDate = dates[0] + '-01'
+        eDate = dates[1] + '-' + day(int(dates[1].split(sep='-')[1]))
     person = request.user.person
 
     income_tax_ranges = IncomeTaxRange.objects.filter(is_active=True, person_type=person.person_type)
