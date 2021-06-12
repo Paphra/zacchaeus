@@ -1,0 +1,101 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Add Income{% endblock title %}
+{% block extra_head %}
+  
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/summernote/summernote-bs4.min.css' %}">
+
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Add Income</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'incomes' %}">Incomes</a></li>
+              <li class="breadcrumb-item active">Add</a></li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Adding Income</h3>
+
+                <div class="card-tools">
+                  <a href="{% url 'incomes' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-list"></i> List
+                  </a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <form action="{% url 'income_add' %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  {% include 'incomes/form.html' %}
+                  <hr/>
+                  <button type="submit" class="btn btn-success float-right">Add</button>
+                </form>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                Add Income
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+
+  <!-- Summernote -->
+  <script src="{% static 'admin-lte/plugins/summernote/summernote-bs4.min.js' %}"></script>
+
+  <script>
+    $(function() {
+      var today = new Date();
+      var startDate = moment();
+      
+      $('#date').daterangepicker({
+          startDate: startDate,
+          showDropdowns: true,
+          singleDatePicker: true,
+          timePicker: true,
+          locale: {
+            format: 'YYYY-MM-DD HH:mm:ss'
+          }
+        });
+
+      // sermmernote
+      $('#details').summernote({
+        height: '150px'
+      });
+
+    });
+  </script> 
+{% endblock extra_js %}

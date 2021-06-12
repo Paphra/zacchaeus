@@ -1,0 +1,78 @@
+{% extends "adminlte/base.html" %}
+{% load i18n static %}
+{% block title %}Registration Closed{% endblock title %}
+{% block body_class %}login-page{% endblock %}
+
+{% block body %}
+    <div class="login-box">
+        {% block logo %}
+        <div class="login-logo">
+            {# Mirrors block names used in _main_header.html #}
+            <a href="{% block logo_href %}{% url 'dashboard' %}{% endblock %}">{% block logo_text %}<b>{{ settings.COMPANY_FULL }}</b>{% endblock %}</a>
+        </div>
+        {% endblock %}
+        <!-- /.login-logo -->
+        <div class="card text-center">
+            <div class="card-header">
+                <h6>Account Registration Closed</h6>
+            </div>
+            <div class="card-body login-card-body">
+                <p>
+                    Thanks for your interesting in Registering account with us. <br>
+                    Due to some technical or other issues, the registration portal has been closed.<br>
+                    Please, try again Later.
+                </p>
+            </div>
+            <!-- /.login-card-body -->
+            <div class="card-footer text-center bg-danger">
+                Account Registraion Closed!
+            </div>
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.login-box -->
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        var submit_el = document.getElementById('submit');
+        var remember_el = document.getElementById('remember');
+        var password = document.getElementById('password');
+        var conf = document.getElementById('confirm_password');
+
+        function checkRemember(evt){
+            if(remember_el.checked){
+                if(password.value == conf.value && password.value !== ''){
+                    submit_el.classList.remove('disabled');
+                }
+            }else{
+                submit_el.classList.add('disabled');
+            }
+        }
+
+        function checkPassword(evt){
+            var feedback_el = document.getElementById('password_feedback');
+            
+            if (password.value !== conf.value){
+                feedback_el.innerHTML = "Password Miss-Match!";
+                conf.classList.add('is-invalid');
+                feedback_el.classList.add('invalid-feedback');
+                submit_el.classList.add('disabled');
+            }else{
+                if(password.value === ''){
+                    feedback_el.innerHTML = "Password Is Empty!";
+                    submit_el.classList.add('disabled');
+                }else{
+                    conf.classList.remove('is-invalid');
+                    feedback_el.classList.remove('invalid-feedback');
+                    feedback_el.classList.add('valid-feedback');
+                    feedback_el.innerHTML = "Password Match!";
+                    if(remember_el.checked){
+                        submit_el.classList.remove('disabled');
+                    }
+                }
+            }
+        }
+
+    </script>
+{% endblock extra_js %}

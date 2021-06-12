@@ -1,0 +1,483 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Charts{% endblock title %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Charts</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item active">Charts</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+{% endblock content_header %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Monthly Recap Report</h5>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <form action="{% url 'charts' %}" class="form-inline" >
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="far fa-calendar-alt"></i>
+                  </span>
+                </div>
+                <input type="text" name="range" 
+                  class="form-control float-right form-control-sm text-xs" id="range">
+                <button class="btn btn-info input-group-append" type="submit">
+                    <i class="fa fa-recycle"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <h6>Monthly Recap: {{ range }}</h6>
+          </div>
+        </div>
+      </div>
+      
+      {% comment %} Sales {% endcomment %}
+      <div class="col-sm-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Monthly Sales Recap Report</h5>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="chart">
+                  <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <h6>Total Sales: <b>{{ total_sales|intcomma }}</b></H6>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Sales Returns {% endcomment %}
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Monthly Sales Returns Recap Report</h5>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="chart">
+                  <canvas id="salesReturnsChart" height="180" style="height: 180px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <h6>Total Sales Returns: <b>{{ total_sales_returns|intcomma }}</b></H6>
+          </div>
+        </div>
+      </div>
+    
+      {% comment %} Purchases {% endcomment %}
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Monthly Purchases Recap Report</h5>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="chart">
+                  <canvas id="purchasesChart" height="180" style="height: 180px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <h6>Total Purchases: <b>{{ total_purchases|intcomma }}</b></H6>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Purchases Returns {% endcomment %}
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Monthly Purchases Returns Recap Report</h5>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="chart">
+                  <canvas id="purchasesReturnsChart" height="180" style="height: 180px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <h6>Total Purchases Returns: <b>{{ total_purchases_returns|intcomma }}</b></H6>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} Expenses {% endcomment %}
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Monthly Expenses Recap Report</h5>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="chart">
+                  <canvas id="expensesChart" height="180" style="height: 180px;"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <h6>Total Expenses: <b>{{ total_expenses|intcomma }}</b></H6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{ months|json_script:'months'}}
+    {{ sales|json_script:'sales' }}
+    {{ sales_returns|json_script:'sales_returns' }}
+    {{ purchases|json_script:'purchases' }}
+    {{ purchases_returns|json_script:'purchases_returns' }}
+    {{ expenses|json_script:'expenses' }}
+  </div>
+{% endblock content %}
+
+{% block extra_js %}
+  <!-- jQuery Mapael -->
+  <script src="{% static 'admin-lte/plugins/jquery-mousewheel/jquery.mousewheel.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/raphael/raphael.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/jquery-mapael/jquery.mapael.min.js' %}"></script>
+  <!-- ChartJS -->
+  <script src="{% static 'admin-lte/plugins/chart.js/Chart.min.js' %}"></script>
+
+  <script type="text/javascript">
+    
+    /* global Chart:false */
+
+    $(function () {
+      var today = new Date();
+      var startDate = '{{ startDate }}';
+      var endDate = '{{ endDate }}';
+      if (!startDate) {startDate = moment().subtract(today.getDate()-1, 'days')}
+      if (!endDate) {endDate = moment()}
+
+      //Date range picker
+      $('#range').daterangepicker({
+          startDate: startDate,
+          endDate  : endDate,
+          showDropdowns: true,
+          locale: {
+            format: 'YYYY-MM-DD'
+          },
+          maxSpan: {
+            'months': 12
+          }
+        });
+      
+      var months = JSON.parse(document.getElementById('months').textContent);
+
+      // Get context with jQuery - using jQuery's .get() method.
+      var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
+
+      var salesChartData = {
+        labels: months,
+        datasets: [
+          {
+            label: 'Sales',
+            backgroundColor: 'rgba(60,141,188,0.5)',
+            borderColor: 'rgba(60,141,188,0.8)',
+            pointRadius: 2,
+            pointColor: '#3b8bba',
+            pointStrokeColor: 'rgba(60,141,188,0.6)',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data: JSON.parse(document.getElementById('sales').textContent)
+          }
+        ]
+      }
+
+      var salesChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: true
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: true
+            }
+          }]
+        }
+      }
+      var salesChart = new Chart(salesChartCanvas, {
+          type: 'line',
+          data: salesChartData,
+          options: salesChartOptions
+        }
+      )
+      
+      // Sales Returns
+      var salesReturnsChartCanvas = $('#salesReturnsChart').get(0).getContext('2d')
+
+      var salesReturnsChartData = {
+        labels: months,
+        datasets: [
+          {
+            label: 'Sales Returns',
+            backgroundColor: 'rgba(30,211,108,0.5)',
+            borderColor: 'rgba(60,141,188,0.8)',
+            pointRadius: 2,
+            pointColor: '#3b8bba',
+            pointStrokeColor: 'rgba(60,141,188,0.6)',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(50,121,118,1)',
+            data: JSON.parse(document.getElementById('sales_returns').textContent)
+          }
+        ]
+      }
+
+      var salesReturnsChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: true
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: true
+            }
+          }]
+        }
+      }
+      var salesChart = new Chart(salesReturnsChartCanvas, {
+          type: 'line',
+          data: salesReturnsChartData,
+          options: salesReturnsChartOptions
+        }
+      )
+
+      // Get context with jQuery - using jQuery's .get() method.
+      var purchasesChartCanvas = $('#purchasesChart').get(0).getContext('2d')
+
+      var purchasesChartData = {
+        labels: months,
+        datasets: [
+          {
+            label: 'Purchases',
+            backgroundColor: 'rgba(141,60,188,0.5)',
+            borderColor: 'rgba(60,141,188,0.8)',
+            pointRadius: false,
+            pointColor: '#3b8bba',
+            pointStrokeColor: 'rgba(60,141,188,0.6)',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data: JSON.parse(document.getElementById('purchases').textContent)
+          }
+        ]
+      }
+
+      var purchasesChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: true
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: true
+            }
+          }]
+        }
+      }
+      var purchasesChart = new Chart(purchasesChartCanvas, {
+          type: 'line',
+          data: purchasesChartData,
+          options: purchasesChartOptions
+        }
+      )
+      // Purchases Returns
+      var purchasesReturnsChartCanvas = $('#purchasesReturnsChart').get(0).getContext('2d')
+      var purchasesReturnsChartData = {
+        labels: months,
+        datasets: [
+          {
+            label: 'Purchases Returns',
+            backgroundColor: 'rgba(80,241,188,0.5)',
+            borderColor: 'rgba(60,141,188,0.8)',
+            pointRadius: 2,
+            pointColor: '#3b8bba',
+            pointStrokeColor: 'rgba(60,141,188,0.6)',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(120,221,208,1)',
+            data: JSON.parse(document.getElementById('purchases_returns').textContent)
+          }
+        ]
+      }
+
+      var purchasesReturnsChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: true
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: true
+            }
+          }]
+        }
+      }
+      var purchasesChart = new Chart(purchasesReturnsChartCanvas, {
+          type: 'line',
+          data: purchasesReturnsChartData,
+          options: purchasesReturnsChartOptions
+        }
+      )
+
+      // Expenses
+      var expensesChartCanvas = $('#expensesChart').get(0).getContext('2d')
+      var expensesChartData = {
+        labels: months,
+        datasets: [
+          {
+            label: 'Expenses',
+            backgroundColor: 'rgba(188,141,60,0.5)',
+            borderColor: 'rgba(60,141,188,0.8)',
+            pointRadius: false,
+            pointColor: '#3b8bba',
+            pointStrokeColor: 'rgba(60,141,188,0.6)',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data: JSON.parse(document.getElementById('expenses').textContent)
+          }
+        ]
+      }
+
+      var expensesChartOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: true
+            }
+          }]
+        }
+      }
+
+      // This will get the first returned node in the jQuery collection.
+      // eslint-disable-next-line no-unused-vars
+      var expensesChart = new Chart(expensesChartCanvas, {
+        type: 'line',
+        data: expensesChartData,
+        options: expensesChartOptions
+      }
+      )
+
+
+    });
+  </script>
+{% endblock extra_js %}

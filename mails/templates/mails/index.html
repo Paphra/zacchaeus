@@ -1,0 +1,217 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Mailbox{% endblock title %}
+{% block extra_head %}
+
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{ heading }}</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              {% if request.resolver_match.url_name != 'mails' %}
+                <li class="breadcrumb-item"><a href="{% url 'mails' %}">Mailbox</a></li>
+              {% endif %}
+              <li class="breadcrumb-item active">{{ heading }}</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock content_header %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-3">
+          <a href="{% url 'mail_compose' %}" class="btn btn-{% if nav_mails == 'compose' %}primary{% else %}success{% endif %} btn-block mb-3">Compose</a>
+
+          {% include 'mails/navs.html' %}
+            
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+          <div class="card card-primary card-outline">
+            <div class="card-header">
+              <h3 class="card-title">{{ heading }}</h3>
+
+              <div class="card-tools">
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" placeholder="Search Mail">
+                  <div class="input-group-append">
+                    <div class="btn btn-primary">
+                      <i class="fas fa-search"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-tools -->
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+              <div class="mailbox-controls">
+                <a type="button" href="{% url request.resolver_match.url_name %}?page={{ mails.number }}" class="btn btn-default btn-sm">
+                  <i class="fas fa-sync-alt"></i>
+                </a>
+                <div class="float-right">
+                  {{ mails.start_index }}-{{ mails.end_index }}/{{ mails.paginator.count }}
+                  <div class="btn-group">
+                    {% if mails.has_previous %}
+                      <a type="button" href="{% url request.resolver_match.url_name %}?page={{ mails.previous_page_number }}" class="btn btn-default btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                      </a>
+                    {% else %}
+                      <a type="button" href="#" class="btn btn-default btn-sm disabled">
+                        <i class="fas fa-chevron-left"></i>
+                      </a>
+                    {% endif %}
+                    {% if mails.has_next %}
+                      <a type="button" href="{% url request.resolver_match.url_name %}?page={{ mails.next_page_number }}" class="btn btn-default btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                      </a>
+                    {% else %}
+                      <a type="button" href="#" class="btn btn-default btn-sm disabled">
+                        <i class="fas fa-chevron-right"></i>
+                      </a>
+                    {% endif %}
+                  </div>
+                  <!-- /.btn-group -->
+                </div>
+                <!-- /.float-right -->
+              </div>
+              <div class="table-responsive mailbox-messages">
+                <table class="table table-hover table-striped">
+                  <tbody>
+                    {% if mails.paginator.count %}
+                      {% for mail in mails %}
+                        <tr>
+                          <td>
+                            {{ forloop.counter }}
+                          </td>
+                          <td class="mailbox-name">
+                            <a href="{{ mail.get_absolute_url }}" {% if user.person == mail.receipient and not mail.read %}
+                                class="btn btn-info btn-xs" 
+                            {% endif %}>
+                              {% if mail.sender_person == user.person %}
+                                {{ mail.receipient }}
+                              {% else %}
+                                {{ mail.sender_person }} | {{ mail.sender_user }}
+                              {% endif %}
+                            </a>
+                          </td>
+                          <td class="mailbox-subject">
+                              {{ mail.subject }}
+                          </td>
+                          <td class="mailbox-attachment">
+                            {% if mail.attatchment %}
+                              <i class="fas fa-paperclip"></i>
+                            {% endif %}
+                          </td>
+                          <td class="mailbox-date">{{ mail.date_sent|naturaltime }}</td>
+                          <td>
+                            <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#delete-{{ mail.pk }}">
+                              <i class="fa fa-trash"></i>
+                            </button>
+                            {% include 'mails/delete.html' %}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                        <td colspan="4">No Mails Found Here!</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+                <!-- /.table -->
+              </div>
+              <!-- /.mail-box-messages -->
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer p-0">
+              <div class="mailbox-controls">
+                <a type="button" href="{% url request.resolver_match.url_name %}?page={{ mails.number }}" class="btn btn-default btn-sm">
+                  <i class="fas fa-sync-alt"></i>
+                </a>
+                <div class="float-right">
+                  {% if mails.count %}
+                    {{ mails.start_index }}-{{ mails.end_index }}/{{ mails.paginator.count }}
+                  {% endif %}
+                  <div class="btn-group">
+                    {% if mails.has_previous %}
+                      <a type="button" href="{% url request.resolver_match.url_name %}?page={{ mails.previous_page_number }}" class="btn btn-default btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                      </a>
+                    {% else %}
+                      <a type="button" href="#" class="btn btn-default btn-sm disabled">
+                        <i class="fas fa-chevron-left"></i>
+                      </a>
+                    {% endif %}
+                    {% if mails.has_next %}
+                      <a type="button" href="{% url request.resolver_match.url_name %}?page={{ mails.next_page_number }}" class="btn btn-default btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                      </a>
+                    {% else %}
+                      <a type="button" href="#" class="btn btn-default btn-sm disabled">
+                        <i class="fas fa-chevron-right"></i>
+                      </a>
+                    {% endif %}
+                  </div>
+                  <!-- /.btn-group -->
+                </div>
+                <!-- /.float-right -->
+              </div>
+            </div>
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+{% endblock %}
+
+{% block extra_js %}
+  <script>
+    $(function () {
+      //Enable check and uncheck all functionality
+      $('.checkbox-toggle').click(function () {
+        var clicks = $(this).data('clicks')
+        if (clicks) {
+          //Uncheck all checkboxes
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', false)
+          $('.checkbox-toggle .far.fa-check-square').removeClass('fa-check-square').addClass('fa-square')
+        } else {
+          //Check all checkboxes
+          $('.mailbox-messages input[type=\'checkbox\']').prop('checked', true)
+          $('.checkbox-toggle .far.fa-square').removeClass('fa-square').addClass('fa-check-square')
+        }
+        $(this).data('clicks', !clicks)
+      })
+
+      //Handle starring for font awesome
+      $('.mailbox-star').click(function (e) {
+        e.preventDefault()
+        //detect type
+        var $this = $(this).find('a > i')
+        var fa    = $this.hasClass('fa')
+
+        //Switch states
+        if (fa) {
+          $this.toggleClass('fa-star')
+          $this.toggleClass('fa-star-o')
+        }
+      })
+    })
+  </script>
+{% endblock %}

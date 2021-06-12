@@ -1,0 +1,129 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Register{% endblock title %}
+
+{% block content_header %}
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Register Person</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'person' %}">Person</a></li>
+            <li class="breadcrumb-item active">Submit</a></li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+{% endblock content_header %}
+
+{% block content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Registering Person</h3>
+
+                <div class="card-tools">
+                  <a href="{% url 'person' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-list"></i> Back to Person Details
+                  </a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <ul class="nav nav-tabs" id="registerPerson" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="submitToURA-tab" data-toggle="tab" href="#submitToURA" 
+                      role="tab" aria-controls="home" 
+                      aria-selected="true">Apply For TIN</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="usingTIN-tab" data-toggle="tab" 
+                      href="#usingTIN" role="tab" aria-controls="usingTIN" 
+                      aria-selected="false">Already Have TIN</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="register-tab" data-toggle="tab" 
+                      href="#registerOrg" role="tab" aria-controls="registerOrg" 
+                      aria-selected="false">Register New Organisation</a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                  <div class="tab-pane fade show active" id="submitToURA" role="tabpanel" 
+                    aria-labelledby="submitToURA-tab">
+                    <form action="{% url 'register_person' %}" class="needs-validation" method="POST" 
+                      enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="card">
+                        <div class="card-header">
+                          <h5 class="card-title">New Person? Fill In the Details</h5>
+                        </div>
+                        <div class="card-body">
+                          {% include 'persons/form.html' %}
+                        </div>
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-success float-right">Submit To URA</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="tab-pane fade" id="usingTIN" role="tabpanel" 
+                    aria-labelledby="usingTIN-tab">
+                    <form action="{% url 'register_person' %}?tin=1" method="post">
+                      {% csrf_token %}
+                      <div class="card">
+                        <div class="card-header">
+                          <h5 class="card-title">Already Registered? Use TIN</h5>
+                        </div>
+                        <div class="card-body">
+                          {% include 'persons/form-tin.html' %}
+                        </div>
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-success float-right">Confirm</button>
+                        </div>                        
+                      </div>
+                    </form>
+                  </div>
+                  <div class="tab-pane fade" id="registerOrg" role="tabpanel" 
+                    aria-labelledby="registerOrg-tab">
+                    <form action="" enctype="multipart/form" method="POST">
+                      <div class="card" >
+                        <div class="card-header">
+                          <h2 class="card-title">Register an New Organisation, or Company</h2>
+                        </div>
+                        <div class="card-body">
+                        </div>
+                        <div class="card-footer">
+                          <button class="btn btn-success float-right" type="submit">Submit For Review</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                Register Person
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+
+{% endblock %}

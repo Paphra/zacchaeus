@@ -1,0 +1,210 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Person{% endblock title %}
+
+{% block extra_head %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  
+{% endblock extra_head %}
+
+{% block content_header %}
+  <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Person</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item active">Person</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock content_header %}
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Person</h3>
+                <div class="card-tools">
+                  {% if perms.persons.add_user and user.person %}
+                    <a href="{% url 'add_user' %}" class="btn btn-xs btn-primary">
+                      <i class="fa fa-plus"></i> Add User
+                    </a>
+                  {% endif %}
+                  {% if user.person and not user.person.tin and user.person.owner == user %}
+                    <a href="{% url 'pay-reg-fees' %}" class="btn btn-xs btn-danger">
+                      <i class="fa fa-receipt"></i> Pay Registration Fees
+                    </a>
+                  {% endif %}
+                  {% if perms.persons.add_person %}
+                    {% if not user.person and not user.personuser %}
+                      <a href="{% url 'register_person' %}" class="btn btn-xs btn-info">
+                        <i class="fa fa-plus"></i> Register Person
+                      </a>
+                    {% endif %}
+                  {% endif %}
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                {% if not user.person %}
+                  {% if perms.persons.add_person %}
+                    <p>You have not yet Registered any Person With Us, Please Register one here: 
+                      <a href="{% url 'register_person' %}" class="btn btn-xs btn-success">
+                        <i class="fa fa-plus"></i> Register Person
+                      </a>
+                    </p>
+                  {% else %}
+                    <p>Please, Contact your Administrator to add a person!</p>
+                  {% endif %}
+                {% else %}
+                  <table id="person" class="table table-sm table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>TIN</th>
+                        <th>No. Of Workers</th>
+                        <th>Added</th>
+                      </tr>
+                    <thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ user.person.name }}</td>
+                        <td>{{ user.person.tin }}</td>
+                        <td>{{ user.person.workers.all.count }}</td>
+                        <td>{{ user.person.date_created }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  
+                  <div class="row mt-3">
+                    <div class="col-sm-12">
+                      <div class="card border-success">
+                        <div class="card-header">
+                          <h6 class="card-title">Person Details</h6>
+                          <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" 
+                              title="Collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
+                            {% if user.person.ura_registered %}
+                              <h6>This Person Is fully registered!</h6>
+                            {% elif user.person.ura_submitted %}
+                              <h6>This Person is Submitted for TIN Registration/Review By URA</h6><hr>
+                              <a href="{% url 'track_reg' %}" class="btn btn-xs btn-success">Track Registration Process</a>
+                            {% else %}
+                              {% if user.person.org_registration %}
+                                <h6>The Person is registered as an Organisation but not yet Submitted for
+                                  For TIN Registration</h6><hr>
+                                <a href="{% url 'register_person' %}" class="btn btn-xs tbn-info">Submit Person to URA</a>
+                              {% else %}
+                                <h6>The Person is not Yet Submitted for TIN Registration</h6><hr>
+                                <a href="{% url 'register_person' %}" class="btn btn-xs btn-success">
+                                  Submit Person for TIN Registration</a>
+                              {% endif %}
+                            {% endif %}
+                          </div>
+                        </div>
+                        <div class="card-footer">
+                          
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                Details About This Person
+                <a href="{% url 'users' %}" class="btn btn-xs btn-primary float-right">
+                  <i class="fa fa-users"></i> Users
+                </a>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+{% block extra_js %}
+  <!-- DataTables  & Plugins -->
+  <script src="{% static 'admin-lte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/pdfmake.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/vfs_fonts.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+{% endblock %}
+
+{% block extra_foot %}
+  <script>
+    $(function () {
+      $("#persons").DataTable({
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "buttons": [
+          {
+            extend: "copy",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "excel",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "pdf",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "print",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          }
+        ]
+      }).buttons().container().appendTo('#persons_wrapper .col-md-6:eq(0)');
+      
+    });
+  </script>
+{% endblock %}

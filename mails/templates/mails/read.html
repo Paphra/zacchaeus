@@ -1,0 +1,118 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}{{ mail.subject }} | Mails {% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content_header %}
+  <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Compose</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'mails' %}">Mails</a></li>
+              <li class="breadcrumb-item active">Compose</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+            <a href="mailbox.html" class="btn btn-primary btn-block mb-3">Back to Inbox</a>
+
+            {% include 'mails/navs.html' %}
+            
+          </div>
+          <!-- /.col -->
+        <div class="col-md-9">
+          <div class="card card-primary card-outline">
+            <div class="card-header">
+              <h3 class="card-title">Read Mail</h3>
+
+              <div class="card-tools">
+                <a href="#" class="btn btn-tool" title="Previous"><i class="fas fa-chevron-left"></i></a>
+                <a href="#" class="btn btn-tool" title="Next"><i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+              <div class="mailbox-read-info">
+                <h5>{{ mail.subject }}</h5>
+                <h6>From: {{ mail.sender_person }} | by | {{ mail.sender_user }}
+                  <span class="mailbox-read-time float-right">{{ mail.date_sent }}</span></h6>
+              </div>
+              <!-- /.mailbox-read-info -->
+              <div class="mailbox-controls with-border text-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-{{ mail.pk }}" data-container="body" title="Delete">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+
+                  <button type="button" class="btn btn-default btn-sm" data-container="body" title="Reply">
+                    <i class="fas fa-reply"></i>
+                  </button>
+                </div>
+                <!-- /.btn-group -->
+                <button type="button" class="btn btn-default btn-sm" title="Print">
+                  <i class="fas fa-print"></i>
+                </button>
+              </div>
+              <!-- /.mailbox-controls -->
+              <div class="mailbox-read-message">
+                {{ mail.body|safe }}
+              </div>
+              <!-- /.mailbox-read-message -->
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer bg-white">
+              <ul class="mailbox-attachments d-flex align-items-stretch clearfix">
+                {% if mail.attachment %}
+                  <li>
+                    <span class="mailbox-attachment-icon"><i class="far fa-file-pdf"></i></span>
+
+                    <div class="mailbox-attachment-info">
+                      <a href="/media/{{ mail.attachment }}" target="_blank" class="mailbox-attachment-name">
+                        <i class="fas fa-paperclip"></i> {{ mail.attachment.name }}
+                      </a>
+                      <span class="mailbox-attachment-size clearfix mt-1">
+                        <span>{{ mail.attachment.size|intcomma }} Bytes</span>
+                        <a href="/media/{{ mail.attachment }}" target="_blank" class="btn btn-default btn-sm float-right"><i class="fas fa-cloud-download-alt"></i></a>
+                      </span>
+                    </div>
+                  </li>
+                {% endif %}                
+              </ul>
+            </div>
+            <!-- /.card-footer -->
+            <div class="card-footer">
+              <div class="float-right">
+                <button type="button" class="btn btn-default"><i class="fas fa-reply"></i> Reply</button>
+              </div>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-{{ mail.pk }}"><i class="far fa-trash-alt"></i> Delete</button>
+              {% include 'mails/delete.html' %}
+              <button type="button" class="btn btn-default"><i class="fas fa-print"></i> Print</button>
+            </div>
+            <!-- /.card-footer -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Withdrawal Details{% endblock title %}
+{% block extra_head %}
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>View Withdrawal</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'withdrawals' %}">Withdrawals</a></li>
+              <li class="breadcrumb-item active">Details</a></li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Withdrawal Particulars - {{ withdrawal.particulars }}</h3>
+
+                <div class="card-tools">
+                  <a href="{% url 'withdrawals' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-list"></i> List
+                  </a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-8">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title">Withdrawals Information</h5>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <h6>Particulars</h6>
+                            <p>{{ withdrawal.particulars }}</p>
+                            
+                            <h6>Entered By</h6>
+                            <p>{{ withdrawal.user.username }}</p>
+
+                            <h6>Amount</h6>
+                            <p>{{ withdrawal.amount|intcomma }}</p>
+
+                            <hr>
+                            <h6>Date Made</h6>
+                            <p>{{ withdrawal.date_made }}</p>
+
+                            <h6>Date Created</h6>
+                            <p>{{ withdrawal.created }}</p>
+
+                          </div>
+                          <div class="col-sm-6">
+                            <h5>Withdrawal Details</h5>
+                            <p>{{ withdrawal.details|safe }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title">Receipt And Other Documents</h5>
+                      </div>
+                      <div class="card-body">
+                        <img src="{% if withdrawal.receipt %}/media/{{ withdrawal.receipt }}{% else %}{% static 'admin-lte/dist/img/default-150x150.png' %}{% endif %}" 
+                          id="receiptPreview" class="img img-rounded float-right" 
+                          alt="Receipt Preview" width="100%" />
+                        {% if withdrawal.document %}
+                          <hr>
+                          <a href="/media/{{ withdrawal.document }}" target="_blank"
+                            class="" width="100%">{{ withdrawal.particulars }} | Docmuent</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title">Actions</h5>
+                      </div>
+                      <div class="card-body">
+                        <a href="{% url 'withdrawal_change' withdrawal.pk %}" type="button" class="btn btn-warning btn-sm">Edit</a>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-{{ withdrawal.pk }}">
+                          Delete
+                        </button>
+                        {% include 'liabilities/withdrawals/delete.html' %}
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer text-right">
+                <p>Withdrawal Details</p>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}

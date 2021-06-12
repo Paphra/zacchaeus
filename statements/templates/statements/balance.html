@@ -1,0 +1,258 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Balance Sheet{% endblock title %}
+{% block extra_head %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Balance Sheet</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'statements' %}">Statements</a></li>
+              <li class="breadcrumb-item active">Balance Sheet</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-4">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Balance Sheet</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <form action="{% url 'balance_sheet' %}" class="form-inline" method="GET">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text text-sm">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="range"
+                      class="form-control form-control-sm float-right text-xs" id="range">
+                    <button class="btn btn-info input-group-append" type="submit">
+                      <i class="fa fa-recycle"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                  Balance Sheet > {{ range }}
+              </div>
+              <!-- /.card-footer-->
+            </div>
+          </div>
+
+          <div class="m-auto col-sm-8">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  Balance Sheet
+                </h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <table id="statement" class="table table-sm table-bordered table-hover table-striped" width="100%">
+                  <thead>
+                    <tr>
+                      <th width="55%">Details</th>
+                      <th width="15%">Amount</th>
+                      <th width="15%">Amount</th>
+                      <th width="15%">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Assets</td>
+                      <td></td>
+                      <td align="right">{{ assets|intcomma }}</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Add Net profit</td>
+                      <td></td>
+                      <td align="right">{{ net_profit|intcomma }}</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Add Debtors</td>
+                      <td></td>
+                      <td align="right">{{ debtors|intcomma }}</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Less Depreciations</td>
+                      <td></td>
+                      <td align="right">({{ depreciations|intcomma }})</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td align="right"><b>Total Assets</b></td>
+                      <td></td>
+                      <td></td>
+                      <td align="right" bgcolor="dark" style="color: white">
+                        <b>{{ total_assets|intcomma }}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Creditors</td>
+                      <td align="right">{{ creditors|intcomma }}</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Add Other Liabilities</td>
+                      <td align="right">{{ liabilities|intcomma }}</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Add Interests</td>
+                      <td align="right">{{ interests|intcomma }}</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Add Property Income</td>
+                      <td align="right">{{ property_incomes|intcomma }}</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Less Withdrawals</td>
+                      <td align="right">({{ withdrawals|intcomma }})</td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><b>Owner's Equity</b></td>
+                      <td></td>
+                      <td align="right" style="color: white" bgcolor="dark">
+                        <b>{{ owners_equity|intcomma }}</b>
+                      </td>
+                      <td align="right">
+                        {% if total_assets != owners_equity %}
+                          GAP <b>{{ gap|intcomma }}</b>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                  Balance Sheet > {{ range }}
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+  <!-- DataTables  & Plugins -->
+  <script src="{% static 'admin-lte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/pdfmake.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/vfs_fonts.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
+  <script>
+    $(function () {
+      var today = new Date();
+      var startDate = '{{ startDate }}';
+      var endDate = '{{ endDate }}';
+      if (!startDate) {startDate = moment().subtract(today.getDate()-1, 'days')}
+      if (!endDate) {endDate = moment()}
+
+      //Date range picker
+      $('#range').daterangepicker({
+          startDate: startDate,
+          endDate  : endDate,
+          showDropdowns: true,
+          locale: {
+            format: 'YYYY-MM-DD'
+          }
+        });
+      
+      $("#statement").DataTable({
+        "responsive": true, 
+        ordering: false,
+        paging: false,
+        "autoWidth": false,
+        "buttons": [
+          {
+            extend: "copy",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          },
+          {
+            extend: "excel",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          },
+          {
+            extend: "pdf",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          },
+          {
+            extend: "print",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3]
+            }
+          }
+        ]
+      }).buttons().container().appendTo('#statement_wrapper .col-md-6:eq(0)');
+      
+    });
+  </script>
+{% endblock %}

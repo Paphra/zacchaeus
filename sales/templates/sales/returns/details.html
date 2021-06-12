@@ -1,0 +1,127 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Sales Return Details{% endblock title %}
+{% block extra_head %}
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>View Sales Return</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'sales_returns' %}">Sales Returns</a></li>
+              <li class="breadcrumb-item active">Details</a></li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Sales Return Particulars - {{ sales_return.particulars }}</h3>
+
+                <div class="card-tools">
+                  <a href="{% url 'sales_returns' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-list"></i> List
+                  </a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-8">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title">Sales Returns Information</h5>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <h6>Particulars</h6>
+                            <p>{{ sales_return.particulars }}</p>
+                            
+                            <h6>Entered By</h6>
+                            <p>{{ sales_return.user.username }}</p>
+
+                            <h6>Amount</h6>
+                            <p>{{ sales_return.amount|intcomma }}</p>
+
+                            <hr>
+                            <h6>Date Made</h6>
+                            <p>{{ sales_return.date_made }}</p>
+
+                            <h6>Date Created</h6>
+                            <p>{{ sales_return.created }}</p>
+
+                          </div>
+                          <div class="col-sm-6">
+                            <h5>Sales Return Details</h5>
+                            <p>{{ sales_return.details|safe }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title">Receipt And Other Documents</h5>
+                      </div>
+                      <div class="card-body">
+                        <img src="{% if sales_return.receipt %}/media/{{ sales_return.receipt }}{% else %}{% static 'admin-lte/dist/img/default-150x150.png' %}{% endif %}" 
+                          id="receiptPreview" class="img img-rounded float-right" 
+                          alt="Receipt Preview" width="100%" />
+                        {% if sales_return.document %}
+                          <hr>
+                          <a href="/media/{{ sales_return.document }}" target="_blank"
+                            class="" width="100%">{{ sales_return.particulars }} | Docmuent</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 class="card-title">Actions</h5>
+                      </div>
+                      <div class="card-body">
+                        <a href="{% url 'sales_return_change' sales_return.pk %}" type="button" class="btn btn-warning btn-sm">Edit</a>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete-{{ sales_return.pk }}">
+                          Delete
+                        </button>
+                        {% include 'sales/returns/delete.html' %}
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer text-right">
+                <p>Sales Return Details</p>
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}

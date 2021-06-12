@@ -1,0 +1,243 @@
+{% load adminlte_helpers %}
+{% load static %}
+
+<!-- Left side column. contains the sidebar -->
+<aside class="main-sidebar sidebar-dark-primary  elevation-4">
+     <!-- Brand Logo -->
+    {% block logo %}
+        <a href="/" class="brand-link">
+            <img src="{%static 'admin-lte/dist/img/AdminLTELogo.png' %}" alt="Zacchaeus Logo" 
+                class="brand-image img-circle elevation-3" style="opacity: .8">
+            {% block logo_text %}
+                <span class="brand-text font-weight-light">
+                    {{ settings.COMPANY }}
+                </span>
+            {% endblock %}
+        </a>
+    {% endblock %}
+    <!-- sidebar: style can be found in sidebar.less -->
+    <div class="sidebar">
+        <!-- Sidebar user panel -->
+        {% block user_panel %}
+            <!-- Sidebar user panel (optional) -->
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="image">
+                    <img src="{% avatar_url size=90 %}" class="img-circle elevation-2" alt="User Image">
+                </div>
+                <div class="info">
+                    <a href="{% url 'profile' %}" class="d-block {% if nav == 'profile' %}btn btn-block bg-blue p-1{% endif %}">
+                    {% firstof request.user.get_full_name request.user.username %}
+                    </a>
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block form %}{% endblock %}
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        {% block nav_links_ul %}
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-flat" data-widget="treeview" role="menu" data-accordion="false">
+                    {% block nav_links_outer %}
+                        <li class="nav-header">{% block nav_heading %}MAIN NAVIGATION{% endblock %}</li>
+
+                        {% block nav_links %}
+                            <li class="nav-item">
+                                <a href="{% url 'dashboard' %}" class="nav-link {% if nav == 'dashboard' %}active{% endif %}">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>Dashboard</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'mails' %}" class="nav-link {% if nav == 'mails' %}active{% endif %}">
+                                    <i class="nav-icon far fa-envelope"></i>
+                                    <p>Mailbox 
+                                      {% if user.person.unread_mails.count %}
+                                        <span class="badge bg-success float-right">{{ user.person.unread_mails.count }}</span>
+                                      {% endif %}
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item {% if nav == 'sales' or nav == 'purchases' or nav == 'sales_returns' or nav == 'purchases_returns' %}menu-open{% endif %}">
+                                <a href="#" class="nav-link {% if nav == 'sales' or nav == 'purchases' or nav == 'sales_returns' or nav == 'purchases_returns' %}active{% endif %}">
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>Transactions <i class="fas fa-angle-left right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{% url 'sales' %}" class="nav-link {% if nav == 'sales' %}active{% endif %}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Sales</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'sales_returns' %}" class="nav-link {% if nav == 'sales_returns' %}active{% endif %}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Sales Returns</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'purchases' %}" class="nav-link {% if nav == 'purchases' %}active{% endif %}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Purchases</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'purchases_returns' %}" class="nav-link {% if nav == 'purchases_returns' %}active{% endif %}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Purchases Returns</p>
+                                    </a>
+                                </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item {% if nav == 'property_incomes' or nav == 'expenses' or nav == 'depreciations' or nav == 'incomes' or nav == 'interests' %}menu-open{% endif %}">
+                                <a href="#" class="nav-link {% if nav == 'property_incomes' or nav == 'expenses' or nav == 'depreciations' or nav == 'incomes' or nav == 'interests' %}active{% endif %}">
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>Income & Expenditure <i class="fas fa-angle-left right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'interests' %}" class="nav-link {% if nav == 'interests' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Interests</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'property_incomes' %}" class="nav-link {% if nav == 'property_incomes' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Property Income</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'incomes' %}" class="nav-link {% if nav == 'incomes' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Other Incomes</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'depreciations' %}" class="nav-link {% if nav == 'depreciations' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Depreciation</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'expenses' %}" class="nav-link {% if nav == 'expenses' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Expenses</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item {% if nav == 'assets' or nav == 'debtors' or nav == 'stock' or nav == 'liabilities' or nav == 'creditors' or nav == 'withdrawals' %}menu-open{% endif %}">
+                                <a href="#" class="nav-link {% if nav == 'assets' or nav == 'debtors' or nav == 'stock' or nav == 'liabilities' or nav == 'creditors' or nav == 'withdrawals' %}active{% endif %}">
+                                    <i class="nav-icon fas fa-book"></i>
+                                    <p>Book Tracking <i class="fas fa-angle-left right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{% url 'stock' %}" class="nav-link {% if nav == 'stock' %}active{% endif %}">
+                                        <i class="nav-icon fas fa-chart-bar"></i>
+                                        <p>Stock Turn Over</p>
+                                    </a>
+                                </li>
+                                <hr>
+                                <li class="nav-item">
+                                    <a href="{% url 'debtors' %}" class="nav-link {% if nav == 'debtors' %}active{% endif %}">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        <p>Debtors</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'assets' %}" class="nav-link {% if nav == 'assets' %}active{% endif %}">
+                                        <i class="nav-icon fas fa-chart-line"></i>
+                                        <p>Other Assets</p>
+                                    </a>
+                                </li>
+                                <hr>
+                                <li class="nav-item">
+                                    <a href="{% url 'creditors' %}" class="nav-link {% if nav == 'creditors' %}active{% endif %}">
+                                        <i class="nav-icon fas fa-chart-area"></i>
+                                        <p>Creditors</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'withdrawals' %}" class="nav-link {% if nav == 'withdrawals' %}active{% endif %}">
+                                        <i class="nav-icon fas fa-chart-area"></i>
+                                        <p>Withdrawals</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'liabilities' %}" class="nav-link {% if nav == 'liabilities' %}active{% endif %}">
+                                        <i class="nav-icon fas fa-chart-area"></i>
+                                        <p>Other Liabilities</p>
+                                    </a>
+                                </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item {% if nav == 'income_statement' or nav == 'balance_sheet' or nav == 'statements' %}menu-open{% endif %}">
+                                <a href="#" class="nav-link {% if nav == 'income_statement' or nav == 'balance_sheet' or nav == 'statements'%}active{% endif %}">
+                                    <i class="nav-icon fas fa-table"></i>
+                                    <p>Statements <i class="fas fa-angle-left right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'statements' %}" class="nav-link {% if nav == 'statements' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Statements</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'income_statement' %}" class="nav-link {% if nav == 'income_statement' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Income Statements</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'balance_sheet' %}" class="nav-link {% if nav == 'balance_sheet' %}active{% endif %}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Balance Sheets</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'charts' %}" class="nav-link {% if nav == 'charts' %}active{% endif %}">
+                                    <i class="nav-icon fas fa-chart-pie"></i>
+                                    <p>Charts</p>
+                                </a>
+                            </li>
+                            <li class="nav-header">TAXATION</li>
+                            <li class="nav-item">
+                                <a href="{% url 'taxation' %}" class="nav-link {% if nav == 'taxation' %}active{% endif %}">
+                                    <i class="nav-icon far fa-calendar-alt"></i>
+                                    <p>Taxes</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'policies' %}" class="nav-link {% if nav == 'policies' %}active{% endif %}">
+                                    <i class="nav-icon fas fa-columns"></i>
+                                    <p>Policies</p>
+                                </a>
+                            </li>
+                            <li class="nav-header">SETTINGS</li>
+                            <li class="nav-item">
+                                <a href="{% url 'person' %}" 
+                                    class="nav-link {% if nav == 'person' or nav == 'register_person' %}active{% endif %}">
+                                    <i class="nav-icon fa fa-building"></i>
+                                    <p>Person</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'users' %}" class="nav-link {% if nav == 'users' or nav == 'add_user' or nav == 'view_user' or nav == 'change_user' %}active{% endif %}">
+                                    <i class="nav-icon fas fa-users"></i>
+                                    <p>Users</p>
+                                </a>
+                            </li>
+                        {% endblock nav_links %}
+                    {% endblock nav_links_outer %}
+                </ul>
+            </nav>
+        {% endblock nav_links_ul %}
+    </div>
+    <!-- /.sidebar -->
+</aside>

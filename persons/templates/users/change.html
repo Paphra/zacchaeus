@@ -1,0 +1,85 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% block title %}Change Person User Info{% endblock title %}
+
+{% block content_header %}
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Change Person User</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'person' %}">Person</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'users' %}">Person Users</a></li>
+            <li class="breadcrumb-item active">Chgane Person User</a></li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+{% endblock content_header %}
+
+{% block content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Changing Person User Information</h3>
+
+                <div class="card-tools">
+                  <a href="{% url 'person' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-list"></i> Person Details
+                  </a>
+                  <a href="{% url 'users' %}" class="btn btn-sm btn-info">
+                    <i class="fa fa-list"></i> Users List
+                  </a>
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-2"></div>
+                  <div class="col-sm-8">
+                    <form action="{% url 'change_user' user.pk %}" class="needs-validation" method="PUT" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      
+                      <div class="card">
+                        <div class="card-header">
+                          <h5 class="card-title">Alter the Credentials of the User</h5>
+                        </div>
+                        <div class="card-body">
+                          {% include 'users/form.html' %}
+                        </div>
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-success float-right">Change User Information</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="col-sm-2"></div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                Change Person User Information
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}

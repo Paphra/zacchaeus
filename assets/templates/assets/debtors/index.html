@@ -1,0 +1,201 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}Debtors{% endblock title %}
+{% block extra_head %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'admin-lte/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  
+{% endblock extra_head %}
+
+{% block content_header %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-8">
+            <h1>Debtors</h1>
+          </div>
+          <div class="col-sm-4">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+              <li class="breadcrumb-item active">Debtors</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  Debtors
+                </h3>
+                <div class="card-tools">
+                  {% if user.person %}
+                    <a href="{% url 'debtor_add' %}" class="btn btn-xs btn-info">
+                      <i class="fa fa-plus"></i> Add
+                    </a>
+                  {% elif perms.persons.add_person %}
+                      <a href="{% url 'register_person' %}" class="btn btn-xs btn-info">
+                        <i class="fa fa-plus"></i> Rgister Person
+                      </a>
+                  {% endif %}
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <form action="{% url 'debtors' %}" class="form-inline" method="GET">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text text-sm">
+                        <i class="far fa-calendar-alt"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="range"
+                      class="form-control form-control-sm float-right text-xs" id="range">
+                    <button class="btn btn-info input-group-append" type="submit">
+                      <i class="fa fa-recycle"></i>
+                    </button>
+                  </div>
+                </form>
+                <table id="debtors" class="table table-sm table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>User</th>
+                      <th>Particulars</th>
+                      <th>Amount</th>
+                      <th>Date & Time</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for debtor in debtors %}
+                      <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ debtor.user.username }}</td>
+                        <td>{{ debtor.particulars }}</td>
+                        <td align="right">{{ debtor.amount|intcomma }}</td>
+                        <td>{{ debtor.date_made }}</td>
+                        <td>
+                          <a href="{{ debtor.get_absolute_url }}" type="button" class="btn btn-xs btn-info">
+                            <i class="fa fa-eye"></i>
+                          </a>
+                          <a href="{% url 'debtor_change' debtor.pk %}" type="button" class="btn btn-xs btn-warning">
+                            <i class="fa fa-edit"></i>
+                          </a>
+                          <button type="button" class="btn btn-xs btn-danger" data-toggle="modal" data-target="#delete-{{ debtor.pk }}">
+                            <i class="fa fa-trash"></i>
+                          </button>
+                          {% include 'assets/debtors/delete.html' %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                  Debtors > {{ range }}
+              </div>
+              <!-- /.card-footer-->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+{% comment %}     
+    {{ months|json_script:'months'}}
+    {{ debtors|json_script:'debtors' }}
+    {{ purchases|json_script:'purchases' }}
+    {{ expenses|json_script:'expenses' }} {% endcomment %}
+    
+{% endblock %}
+
+{% block extra_js %}
+  <!-- DataTables  & Plugins -->
+  <script src="{% static 'admin-lte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/pdfmake.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/pdfmake/vfs_fonts.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+  <script src="{% static 'admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
+  <script>
+    $(function () {
+      var today = new Date();
+      var startDate = '{{ startDate }}';
+      var endDate = '{{ endDate }}';
+      if (!startDate) {startDate = moment().subtract(today.getDate()-1, 'days')}
+      if (!endDate) {endDate = moment()}
+
+      //Date range picker
+      $('#range').daterangepicker({
+          startDate: startDate,
+          endDate  : endDate,
+          showDropdowns: true,
+          locale: {
+            format: 'YYYY-MM-DD'
+          }
+        });
+      
+      $("#debtors").DataTable({
+        "responsive": true, 
+        "lengthChange": false, 
+        "autoWidth": false,
+        "buttons": [
+          {
+            extend: "copy",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "excel",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "pdf",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          },
+          {
+            extend: "print",
+            className: 'btn btn-xs',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4]
+            }
+          }
+        ]
+      }).buttons().container().appendTo('#debtors_wrapper .col-md-6:eq(0)');
+      
+    });
+  </script>
+{% endblock %}

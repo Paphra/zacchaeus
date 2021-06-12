@@ -1,0 +1,180 @@
+{% extends "adminlte/base.html" %}
+{% load i18n static %}
+{% block title %}Register{% endblock title %}
+{% block body_class %}login-page{% endblock %}
+
+{% block body %}
+    <div class="login-box">
+        {% block logo %}
+        <div class="login-logo">
+            {# Mirrors block names used in _main_header.html #}
+            <a href="{% block logo_href %}{% url 'dashboard' %}{% endblock %}">{% block logo_text %}<b>{{ settings.COMPANY_FULL }}</b>{% endblock %}</a>
+        </div>
+        {% endblock %}
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                {% block login_errors %}
+                    {% if form.errors and not form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            Please, correct the errors Below.
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <p class="alert alert-danger">
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                {% endblock login_errors %}
+                <p class="login-box-msg">Register With Us</p>
+                {% block login_form %}
+                    <form action="{% url 'django_registration_register' %}" method="post">
+                        {% csrf_token %}
+                        {% if message %}
+                            <p class="login-box-msg" style="color: red;">
+                                {{ message }}
+                                {{ form.non_field_errors }}
+                            </p>
+                        {% endif %}
+                        <div class="row">
+                            <div class="input-group has-validation mb-3">
+                                <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                                    name="username" placeholder="{% trans 'Username' %}"
+                                    value="{% if form.username.value %}{{ form.username.value }}{% endif %}">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.username.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        
+                            <div class="input-group has-validation mb-3">
+                                <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                                    name="email" placeholder="{% trans 'Email' %}"
+                                    value="{% if form.email.value %}{{ form.email.value }}{% endif %}">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="password" 
+                                    name="password1" onKeyUp="checkPassword()" placeholder="{% trans 'Password' %}" required="True">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ form.password1.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="input-group mb-2">
+                                <input type="password" class="form-control" name="password2" id="confirm_password" 
+                                    onKeyUp="checkPassword()" placeholder="{% trans 'Confirm Password' %}" required="True">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                       <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                                <div id="password_feedback" class="text-right"></div>
+                            </div>
+                            {% if form.password2.errors %}
+                                <div class="text-danger">
+                                    <small>{{ form.password2.errors }}</small>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                {% block login_form_links %}
+                                {% endblock %}
+                            </div>
+                            <div class="col-8">
+                                <div class="icheck-primary">
+                                    <input type="checkbox" id="remember" onClick="checkRemember()" >
+                                    <label for="remember">
+                                        I Agree to The <a href="/terms">Terms</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" id="submit" class="btn btn-primary btn-block disabled">{% trans 'Register' %}</button>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </form>
+                {% endblock login_form %}
+                
+
+            </div>
+            <!-- /.login-card-body -->
+            <div class="card-footer text-right">
+                Already Registered? <a href="{% url 'login' %}" class="btn btn-xs btn-success">Login</a>
+            </div>
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.login-box -->
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        var submit_el = document.getElementById('submit');
+        var remember_el = document.getElementById('remember');
+        var password = document.getElementById('password');
+        var conf = document.getElementById('confirm_password');
+
+        function checkRemember(evt){
+            if(remember_el.checked){
+                if(password.value == conf.value && password.value !== ''){
+                    submit_el.classList.remove('disabled');
+                }
+            }else{
+                submit_el.classList.add('disabled');
+            }
+        }
+
+        function checkPassword(evt){
+            var feedback_el = document.getElementById('password_feedback');
+            
+            if (password.value !== conf.value){
+                feedback_el.innerHTML = "Password Miss-Match!";
+                conf.classList.add('is-invalid');
+                feedback_el.classList.add('invalid-feedback');
+                submit_el.classList.add('disabled');
+            }else{
+                if(password.value === ''){
+                    feedback_el.innerHTML = "Password Is Empty!";
+                    submit_el.classList.add('disabled');
+                }else{
+                    conf.classList.remove('is-invalid');
+                    feedback_el.classList.remove('invalid-feedback');
+                    feedback_el.classList.add('valid-feedback');
+                    feedback_el.innerHTML = "Password Match!";
+                    if(remember_el.checked){
+                        submit_el.classList.remove('disabled');
+                    }
+                }
+            }
+        }
+
+    </script>
+{% endblock extra_js %}
