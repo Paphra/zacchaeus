@@ -40,7 +40,7 @@
                 <h3 class="card-title">Person</h3>
                 <div class="card-tools">
                   {% if perms.persons.add_user and user.person %}
-                    <a href="{% url 'add_user' %}" class="btn btn-xs btn-primary">
+                    <a href="{% url 'user_add' %}" class="btn btn-xs btn-primary">
                       <i class="fa fa-plus"></i> Add User
                     </a>
                   {% endif %}
