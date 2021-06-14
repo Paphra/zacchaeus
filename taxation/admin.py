@@ -16,7 +16,7 @@ class IncomeTaxRangeAdmin(admin.ModelAdmin):
 
 @admin.register(OtherIncomeTaxRange)
 class OtherIncomeTaxRangeAdmin(admin.ModelAdmin):
-	list_display = ['name', 'person_type', 'threshhold', 'subtraction', 'addition', 'is_active', 'percentage', 'updated', 'created']
-	list_filter = ['is_active', 'person_type', 'updated']
+	list_display = ['name', 'threshhold', 'subtraction', 'addition', 'is_active', 'percentage', 'updated', 'created']
+	list_filter = ['is_active', 'updated']
 	list_editable = ['is_active', 'percentage']
 	search_fields = ['name']

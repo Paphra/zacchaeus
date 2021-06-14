@@ -62,7 +62,6 @@ class OtherIncomeTaxRange(models.Model):
     Description: Model Description
     """
     name = models.CharField(max_length=100)
-    person_type = models.ForeignKey(PersonType, on_delete=models.CASCADE)
     threshhold = models.IntegerField(default=0)
     alternative = models.IntegerField(default=0)
     subtraction = models.IntegerField(default=0)

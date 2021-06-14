@@ -36,7 +36,7 @@
         <!-- Default box -->
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Taxes | Start Date</h3>
+            <h3 class="card-title">Taxes | Financial Year Start Date</h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-minus"></i>
@@ -51,6 +51,7 @@
                     <i class="far fa-calendar-alt"></i>
                   </span>
                 </div>
+
                 <input type="text" name="startDate"
                   class="form-control form-control-sm float-right text-xs" id="sDate">
                 <button class="btn btn-info input-group-append" type="submit">
@@ -59,22 +60,43 @@
               </div>
             </form>
             <hr/>
-            <div class="row">
-              <div class="col-4 text-right"><b>Sales</b></div>
-              <div class="col-8">{{ sales|intcomma }}</div>
-              <div class="col-4 text-right"><b>Purchases</b></div>
-              <div class="col-8">{{ purchases|intcomma }}</div>
-              <div class="col-4 text-right"><b>Gross Profit</b></div>
-              <div class="col-8">{{ gross_profit|intcomma }}</div>
-              <div class="col-4 text-right"><b>Expenses</b></div>
-              <div class="col-8">{{ expenses|intcomma }}</div>
-              <div class="col-4 text-right"><b>Net Profit</b></div>
-              <div class="col-8">{{ net_profit|intcomma }}</div>
-            </div>
+            <table class="table table-sm table-striped table-condensed table-bordered">
+              <tr>
+                <th>Sales</th>
+                <td>{{ sales|intcomma }}</td>
+              </tr>
+              <tr>
+                <th>Purchases</th>
+                <td>{{ purchases|intcomma }}</td>
+              </tr>
+              <tr>
+                <th>Gross Profit</th>
+                <td>{{ gross_profit|intcomma }}</td>
+              </tr>
+              <tr>
+                <th>Expenses</th>
+                <td>{{ expenses|intcomma }}</td>
+              </tr>
+              <tr>
+                <th>Net Profit</th>
+                <td>{{ net_profit|intcomma }}</td>
+              </tr>
+              <tr>
+                <th colspan="2" class="text-right"> Other Incomes</th>
+              </tr>
+              <tr>
+                <th>Interests</th>
+                <td>{{ interests|intcomma }}</td>
+              </tr>
+              <tr>
+                <th>Property Income</th>
+                <td>{{ property_incomes|intcomma }}</td>
+              </tr>
+            </table>
           </div>
           <!-- /.card-body -->
           <div class="card-footer">
-              Taxes Range > {{ range }}
+              Financial Year > {{ range }}
           </div>
           <!-- /.card-footer-->
         </div>
@@ -100,6 +122,7 @@
                   <th>Name</th>
                   <th>Low</th>
                   <th>High</th>
+                  <th>Subtraction</th>
                   <th>Addition</th>
                   <th>Percentage</th>
                   <th>Updated</th>
@@ -111,6 +134,7 @@
                     <td>{{ range.name }}</td>
                     <td>{{ range.low|intcomma }}</td>
                     <td>{{ range.high|intcomma }}</td>
+                    <td>{{ range.subtraction|intcomma }}</td>
                     <td>{{ range.addition|intcomma }}</td>
                     <td>{{ range.percentage }}%</td>
                     <td>{{ range.updated }}</td>
@@ -120,13 +144,7 @@
             </table>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Taxes -->
-    <div class="row">
-      <div class="m-auto col-sm-8">
-        <!-- Default box -->
+        <hr>
         <div class="card">
           <div class="card-header">
             <h3 class="card-title">Pending Tax Calculation</h3>
@@ -136,23 +154,50 @@
               </button>
             </div>
           </div>
-          <div class="card-body row">
-            <div class="col-4 text-right"><b>Tax Range</b></div>
-            <div class="col-8">
-              {{ tax_range.name }}
-            </div>
-            <div class="col-4 text-right"><b>Gross Tax</b></div>
-            <div class="col-8">
-              {{ gross_tax }}
-            </div>
-
-            <!-- Calculations Display -->
-            
-            <hr>
-            <div class="col-4 text-right"><b>Net Tax</b></div>
-            <div class="col-8">
-              {{ net_tax }}
-            </div>
+          <div class="card-body">
+            <table class="table table-sm table-striped table-condensed table-bordered">
+              <tr>
+                <th>Tax Range</th>
+                <th colspan="2" class="text-center">{{ tax_range.name }}</th>
+              </tr>
+              <tr>
+                <th>Net Profit</th>
+                <td>{{ net_profit|intcomma }}</td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Less Lower Tax Boundary</th>
+                <td>{{ tax_range.low|intcomma }}</td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Chargeable Profit</th>
+                <td>{{ chargeable_profit|intcomma }}</td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>Gross Tax</th>
+                <td bgcolor="light" class="text-white text-right">{{ tax_range.percentage }}%</td>
+                <td bgcolor="light" class="text-white">{{ gross_tax|intcomma }}</td>
+              </tr>
+              <tr>
+                <th class="text-success text-right" colspan="2">Add</th>
+              </tr>
+              <tr>
+                <th>Interest Tax</th>
+                <td></td>
+                <td>{{ interest_tax|intcomma }}</td>
+              </tr>
+              <tr>
+                <th>Property Income Tax</th>
+                <td></td>
+                <td>{{ property_tax|intcomma }}</td>
+              </tr>
+              <tr>
+                <th bgcolor="light" colspan="2" class="text-white text-center">Net Tax</th>
+                <td bgcolor="light" class="text-white">{{ net_tax|intcomma }}</td>
+              </tr>
+            </table>
           </div>
           <div class="card-footer">
             <button type="button" class="btn btn-sm btn-outline-success float-right" data-toggle="modal" data-target="#pay-dialog">

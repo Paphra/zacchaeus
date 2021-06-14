@@ -9,10 +9,11 @@ def calculator(person, tax_ranges, sDate, eDate):
 	for rg in tax_ranges:
 		if net_profit > rg.low and net_profit < rg.high:
 			tax_range = rg
-
-	tax = net_profit * (tax_range.percentage / 100)
-	tax = tax + tax_range.addition
-	gross_tax = tax - tax_range.subtraction
+	chargeable_profit = net_profit
+	chargeable_profit = net_profit - tax_range.low
+	
+	tax = chargeable_profit * tax_range.percentage / 100
+	gross_tax = tax - tax_range.subtraction + tax_range.addition
 
 	interests = values['interests']
 	property_incomes = values['property_incomes']
@@ -31,14 +32,14 @@ def calculator(person, tax_ranges, sDate, eDate):
 			interest_range = rg
 			if rg.threshhold < interests:
 				interest_chargeable = interests - rg.threshhold
-				interest_tax = interest_chargeable * rg.percentage
+				interest_tax = interest_chargeable * rg.percentage / 100
 				interest_tax = interest_tax - rg.subtraction + rg.addition
 
 		if rg.name.find('property') > -1 or rg.name.find('Property') > -1:
 			property_range = rg
 			if rg.threshhold < property_incomes:
 				property_chargeable = property_incomes - rg.threshhold
-				property_tax = property_chargeable * rg.percentage
+				property_tax = property_chargeable * rg.percentage / 100
 				property_tax = property_tax - rg.subtraction + rg.addition
 
 	net_tax = tax + interest_tax + property_tax
@@ -56,6 +57,7 @@ def calculator(person, tax_ranges, sDate, eDate):
 		'property_tax': property_tax,
 		'property_chargeable': property_chargeable,
 
+		'chargeable_profit': chargeable_profit,
 		'gross_tax': gross_tax,
 		'net_tax': net_tax,
 	}
